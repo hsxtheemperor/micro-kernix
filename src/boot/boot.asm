@@ -24,9 +24,12 @@
 .equ UART_TXDRDY,     0x4000211C  @ Event: TX byte sent status
 .equ DELAY_COUNT,     5000000     @ Arbitrary delay count for crude timing
 
+/* String */
 MESSAGE: 
-    .asciz "HARSHIT"   @ The 'z' automatically appends the '\0' null terminator
+    .asciz "HARSHIT SAHA\r\n"   @ The 'z' automatically appends the '\0' null terminator
+.align 2
 
+/* Reset Handler */
 
 reset_handler:
     @ On the micro:bit v2, the interface chip connects to Port 0, Pin 6 for TX data.
@@ -47,44 +50,3 @@ reset_handler:
     MOV r1, #0x1
     STR r1, [r0]
 
-_main:
-    LDR r5, =UART_TXDRDY
-
-    MOV r10, #0x10
-    MOV r11, #0x00
-
-    MOV r12, #0x01                  @ EXIT CODE -> 0x01
-    BL _loop
-
-print:
-    LDRB r1, [r4], #0x1             @ Load byte from MESSAGE and increment pointer
-    CMP r1, #0x0                    @ Check for null terminator
-    BEQ _loop                       @ If null terminator, exit
-    BL print_char                   @ Call print_char to send the character
-    BL _poll
-    B print                         @ Repeat for next character
-
-print_char:
-    LDR r0, =UART_TXD
-    STR r1, [r0]
-    BX lr
-
-_poll:
-    LDR r6, [r5]
-    CMP r6, #0x1
-    BNE _poll
-    MOV r6, #0x0
-    STR r6, [r5]
-    BX lr
-
-_loop:
-    CMP r10, r11
-    BEQ _exit
-
-    ADD r11, #0x01
-    LDR r4, =MESSAGE
-    B print
-
-_exit:
-    MOV r12, #0x0                   @ EXIT CODE
-    B _exit                         @ Trap the CPU here forever so it doesn't crash!

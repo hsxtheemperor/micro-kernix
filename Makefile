@@ -1,4 +1,4 @@
-.PHONY: build push all
+.PHONY: build push all debug interface
 BUILD_DIR := build
 BIN_DIR := bin
 build:
@@ -21,3 +21,9 @@ push:
 		exit 1; \
 	fi
 all: build push
+debug:
+	@echo "Starting debugger..."
+	gdb $(BUILD_DIR)/kernel.elf -ex "target remote localhost:3333" -ex "load" -ex "continue"
+interface:
+	@echo "Starting OpenOCD interface via onboard CMSIS-DAP..."
+	openocd -f interface/cmsis-dap.cfg -f target/nrf52.cfg
