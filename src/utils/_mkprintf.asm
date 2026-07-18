@@ -8,16 +8,16 @@
 
 /* LEGACY */
 
-.equ UART_TXD,        0x4000251C  @ Transmit data register
-.equ UART_TXDRDY,     0x4000211C  @ Event: TX byte sent status
+.equ UART_TXD,        0x4000251C  ; Transmit data register
+.equ UART_TXDRDY,     0x4000211C  ; Event: TX byte sent status
 
 print:
-    LDRB r1, [r4], #0x1             @ Load byte from MESSAGE and increment pointer
-    CMP r1, #0x0                    @ Check for null terminator
-    BEQ _loop                       @ If null terminator, exit
-    BL print_char                   @ Call print_char to send the character
+    LDRB r1, [r4], #0x1             ; Load byte from MESSAGE and increment pointer
+    CMP r1, #0x0                    ; Check for null terminator
+    BEQ _loop                       ; If null terminator, exit
+    BL print_char                   ; Call print_char to send the character
     BL _poll
-    B print                         @ Repeat for next character
+    B print                         ; Repeat for next character
 
 print_char:
     LDR r0, =UART_TXD
@@ -33,5 +33,5 @@ _poll:
     BX lr
 
 _exit:
-    MOV r12, #0x0                   @ EXIT CODE
-    B _exit                         @ Trap the CPU here forever so it doesn't crash!
+    MOV r12, #0x0                   ; EXIT CODE
+    B _exit                         ; Trap the CPU here forever so it doesn't crash!
