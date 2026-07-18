@@ -1,3 +1,16 @@
+/* utils/_mkprintf.asm */
+.syntax unified
+.cpu cortex-m4
+.thumb
+
+.section .text
+.global print
+
+/* LEGACY */
+
+.equ UART_TXD,        0x4000251C  @ Transmit data register
+.equ UART_TXDRDY,     0x4000211C  @ Event: TX byte sent status
+
 print:
     LDRB r1, [r4], #0x1             @ Load byte from MESSAGE and increment pointer
     CMP r1, #0x0                    @ Check for null terminator
