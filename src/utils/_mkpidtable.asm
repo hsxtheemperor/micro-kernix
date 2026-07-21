@@ -65,14 +65,24 @@ _mkpidtableentry_creat:
     STRB r4, [r1, #PCB_PRIO]
 
     LDR r0, =_estack
-    LDR r12, #SENTIAL_PCB
-    STR r12, [r0, r2, LSL #10]
-    
-    STR 
+    MOV r3, #SP_SIZE
+    MLA r0, r2, r3, r0
+    LDR r12, =SENTIAL_PCB
+    STR r12, [r0]
+    ADD r0, r0, r3
+    STR r0, [r1, #PCB_SP]
+    BX lr
 
 .thumb_func
 _fetch_pid_entry:
-
+    ; Take PID from r4
+    LDR r0, =_ekernel
+    MOV r1, #PCB_SIZE
+    MLA r0, r4, r1, r0
+    LDR r12, [r0, #PCB_SP]
+    LDRB r2, [r0, #PCB_STATE]
+    LDRB r3, [r0, #PCB_PRIO]
+    BX lr
 
 .thumb_func
 _creat_kernel_pid:
