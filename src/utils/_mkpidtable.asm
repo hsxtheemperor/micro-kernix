@@ -19,6 +19,9 @@
 
 .equ TABLE_SIZE,    80
 
+.equ SP_SIZE,       (1 << 10)
+.equ SENTIAL_PCB,   0xFFEEFFEE
+
 /* PCB (Process Control Block) layout, 8 bytes per entry:
    offset 0x00 (4B): saved stack pointer (SP)
    offset 0x04 (2B): PID
@@ -39,27 +42,39 @@ _mkpidtableentry_creat:
 .init_pid_table:
     LDR r0, =_ekernel
     EOR r1, r1, r1
+    EOR r12, r12, r12
     ADD r1, r0, #(PCB_SIZE)
+    ADD r12, r0, #(TABLE_SIZE)
 
 .find_pid_entry:
+    CMP r1, r12
+    BEQ .program_reject ; Add Waiting or Stopping Method Later
     LDRH r2, [r0, #PCB_PID]
     LDRB r3, [r1, #PCB_STATE]
     ADD r0, r0, #PCB_SIZE
     ADD r1, r1, #PCB_SIZE
-    
-
     CMP r3, #0x0
     BNE .find_pid_entry
 
 .create_pid_entry:
+    ; r2 being used as the primary indexer here
     ADD r2, r2, #0x1
     STRH r2, [r1, #PCB_PID]
-    MOV r3, #0x01
+    MOV r3, #0x1
     STRB r3, [r1, #PCB_STATE]
     STRB r4, [r1, #PCB_PRIO]
-    /* Add Method for sp */
-    BX lr
 
+    LDR r0, =_estack
+    LDR r12, #SENTIAL_PCB
+    STR r12, [r0, r2, LSL #10]
+    
+    STR 
+
+.thumb_func
+_fetch_pid_entry:
+
+
+.thumb_func
 _creat_kernel_pid:
     LDR r0, =_ekernel
     LDR r1, =_estack
@@ -72,6 +87,7 @@ _creat_kernel_pid:
     STRB r3, [r0, #PCB_PRIO]
     BX lr
 
+.thumb_func
 _update_kernel_state: /* sets kernel STATE to value in r2 */
     LDR r0, =_ekernel
     STRB r2, [r0, #PCB_STATE]
