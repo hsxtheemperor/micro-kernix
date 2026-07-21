@@ -4,34 +4,30 @@
 .thumb
 
 .section .text
-.global print
-
-/* LEGACY */
+.global _mkprintf
 
 .equ UART_TXD,        0x4000251C  ; Transmit data register
 .equ UART_TXDRDY,     0x4000211C  ; Event: TX byte sent status
 
-print:
-    LDRB r1, [r4], #0x1             ; Load byte from MESSAGE and increment pointer
-    CMP r1, #0x0                    ; Check for null terminator
-    BEQ _loop                       ; If null terminator, exit
-    BL print_char                   ; Call print_char to send the character
-    BL _poll
-    B print                         ; Repeat for next character
-
-print_char:
+.thumb_func
+_mkprintf:
+    EOR r5, r5, r5
     LDR r0, =UART_TXD
-    STR r1, [r0]
-    BX lr
+    LDR r1, =UART_TXDRDY
 
-_poll:
-    LDR r6, [r5]
-    CMP r6, #0x1
-    BNE _poll
-    MOV r6, #0x0
-    STR r6, [r5]
-    BX lr
+.Lprintstring:
+    LDRB r2, [r4], #0x1
+    CMP r2, #0x0
+    BXEQ lr
+    STRB r2, [r0]
+    B print_event_chk
+    B .Lprintstring
 
-_exit:
-    MOV r12, #0x0                   ; EXIT CODE
-    B _exit                         ; Trap the CPU here forever so it doesn't crash!
+.print_event_chk:
+    LDR r3, [r1]
+    CMP r3, #0x0
+    BEQ .print_event_chk
+    ADD r5, r5, #0x1
+    MOV r3, #0x0
+    STR r3, [r1]
+    B .Lprintstring

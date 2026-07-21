@@ -155,117 +155,108 @@ usage_fault:
 /*           ARM CORTEX-M4 SUPERVISOR CALL (SVC) DISPATCH ENGINE              */
 /* ========================================================================== */
 
+svc_handler:
 ; System Call Routing Engine
     CMP r1, #0x00                 ; SYS EXIT
-    BEQ svc_sys_exit            
+    BLEQ svc_sys_exit            
     
     CMP r1, #0x01                 ; SYS FORK
-    BEQ svc_sys_fork            
+    BLEQ svc_sys_fork            
 
     CMP r1, #0x02                 ; SYS WRITE
-    BEQ svc_sys_write
+    BLEQ svc_sys_write
 
     CMP r1, #0x03                 ; SYS READ
-    BEQ svc_sys_read
+    BLEQ svc_sys_read
 
     CMP r1, #0x04                 ; SYS OPEN
-    BEQ svc_sys_open
+    BLEQ svc_sys_open
 
     CMP r1, #0x05                 ; SYS CLOSE
-    BEQ svc_sys_close
+    BLEQ svc_sys_close
 
     CMP r1, #0x06                 ; SYS WAITPID
-    BEQ svc_sys_waitpid
+    BLEQ svc_sys_waitpid
 
     CMP r1, #0x07                 ; SYS CREAT
-    BEQ svc_sys_creat
+    BLEQ svc_sys_creat
 
     CMP r1, #0x08                 ; SYS LINK
-    BEQ svc_sys_link
+    BLEQ svc_sys_link
 
     CMP r1, #0x09                 ; SYS UNLINK
-    BEQ svc_sys_unlink
+    BLEQ svc_sys_unlink
 
     CMP r1, #0x0A                 ; SYS EXECVE
-    BEQ svc_sys_execve
+    BLEQ svc_sys_execve
 
     CMP r1, #0x0B                 ; SYS CHDIR
-    BEQ svc_sys_chdir
+    BLEQ svc_sys_chdir
 
     CMP r1, #0x0C                 ; SYS TIME
-    BEQ svc_sys_time
+    BLEQ svc_sys_time
 
     CMP r1, #0x0D                 ; SYS MKNOD
-    BEQ svc_sys_mknod
+    BLEQ svc_sys_mknod
 
     CMP r1, #0x0E                 ; SYS CHMOD
-    BEQ svc_sys_chmod
+    BLEQ svc_sys_chmod
 
     CMP r1, #0x0F                 ; SYS LCHOWN
-    BEQ svc_sys_lchown
+    BLEQ svc_sys_lchown
 
     CMP r1, #0x10                 ; SYS STAT
-    BEQ svc_sys_stat
+    BLEQ svc_sys_stat
 
     CMP r1, #0x11                 ; SYS LSEEK
-    BEQ svc_sys_lseek
+    BLEQ svc_sys_lseek
 
     CMP r1, #0x12                 ; SYS GETPID
-    BEQ svc_sys_getpid
+    BLEQ svc_sys_getpid
 
     CMP r1, #0x13                 ; SYS MOUNT
-    BEQ svc_sys_mount
+    BLEQ svc_sys_mount
 
     CMP r1, #0x14                 ; SYS OLDUMOUNT
-    BEQ svc_sys_oldumount
+    BLEQ svc_sys_oldumount
 
     CMP r1, #0x15                 ; SYS SETUID
-    BEQ svc_sys_setuid
+    BLEQ svc_sys_setuid
 
     CMP r1, #0x16                 ; SYS GETUID
-    BEQ svc_sys_getuid
+    BLEQ svc_sys_getuid
 
     CMP r1, #0x17                 ; SYS STIME
-    BEQ svc_sys_stime
+    BLEQ svc_sys_stime
 
     CMP r1, #0x18                 ; SYS PTRACE
-    BEQ svc_sys_ptrace
+    BLEQ svc_sys_ptrace
 
     CMP r1, #0x19                 ; SYS ALARM
-    BEQ svc_sys_alarm
+    BLEQ svc_sys_alarm
 
     CMP r1, #0x1A                 ; SYS FSTAT
-    BEQ svc_sys_fstat
+    BLEQ svc_sys_fstat
 
     CMP r1, #0x1B                 ; SYS PAUSE
-    BEQ svc_sys_pause
+    BLEQ svc_sys_pause
 
     CMP r1, #0x1C                 ; SYS UTIME
-    BEQ svc_sys_utime
+    BLEQ svc_sys_utime
 
     CMP r1, #0x1D                 ; SYS ACCESS
-    BEQ svc_sys_access
+    BLEQ svc_sys_access
 
     CMP r1, #0x1E                 ; SYS NICE
-    BEQ svc_sys_nice
+    BLEQ svc_sys_nice
 
     CMP r1, #0x1F                 ; SYS SYNC
-    BEQ svc_sys_sync
+    BLEQ svc_sys_sync
 
     CMP r1, #0x20                 ; SYS KILL
-    BEQ svc_sys_kill
+    BLEQ svc_sys_kill
 
     BX lr                         ; Unknown/Unhandled SVC, return safely
-
-svc_sys_exit:
-    BL _exit
-
-svc_sys_read:
-    B _exit
-
-svc_sys_write:
-    LDR r2, r4
-    _print
 
 .thumb_func
 pendsv_handler:

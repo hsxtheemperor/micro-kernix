@@ -10,7 +10,7 @@
 /* ========================================================================== */
 /*                   ARM CORTEX-M4 CORE SYSTEM EXCEPTIONS                     */
 /* ========================================================================== */
-.word 0x20020000            ; 0: Initial Stack Pointer
+.word _estack               ; 0: Initial Stack Pointer
 .word start_handler         ; 1: Reset Vector (Execution Starts Here)
 .word nmi_handler           ; 2: Non-Maskable Interrupt
 .word hard_fault            ; 3: HardFault Handler
